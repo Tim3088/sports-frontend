@@ -1,0 +1,114 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "木球体育文化"
+      }
+    },
+    {
+      "path": "pages/service/service",
+      "style": {
+        "navigationBarTitleText": "服务"
+      }
+    },
+    {
+      "path": "pages/consult/index",
+      "style": {
+        "navigationBarTitleText": "咨询服务"
+      }
+    },
+    {
+      "path": "pages/appointment/index",
+      "style": {
+        "navigationBarTitleText": "预约服务"
+      }
+    },
+    {
+      "path": "pages/feedback/index",
+      "style": {
+        "navigationBarTitleText": "反馈建议"
+      }
+    },
+    {
+      "path": "pages/help/index",
+      "style": {
+        "navigationBarTitleText": "帮助中心"
+      }
+    },
+    {
+      "path": "pages/profile/index",
+      "style": {
+        "navigationBarTitleText": "我"
+      }
+    },
+    {
+      "path": "pages/education/index",
+      "style": {
+        "navigationBarTitleText": "木球教育培训"
+      }
+    },
+    {
+      "path": "pages/equipment/index",
+      "style": {
+        "navigationBarTitleText": "木球器材器械"
+      }
+    },
+    {
+      "path": "pages/health/index",
+      "style": {
+        "navigationBarTitleText": "木球健康旅居"
+      }
+    },
+    {
+      "path": "pages/events/index",
+      "style": {
+        "navigationBarTitleText": "木球赛事"
+      }
+    },
+    {
+      "path": "pages/about/index",
+      "style": {
+        "navigationBarTitleText": "关于我们"
+      }
+    },
+    {
+      "path": "pages/webview/index",
+      "style": {
+        "navigationBarTitleText": "加载中..."
+      }
+    }
+  ],
+  "tabBar": {
+    "color": "#666",
+    "selectedColor": "#1e88e5",
+    "backgroundColor": "#fff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "/static/icons/home.png",
+        "selectedIconPath": "/static/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/service/service",
+        "text": "服务",
+        "iconPath": "/static/icons/service.png",
+        "selectedIconPath": "/static/icons/service-active.png"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我",
+        "iconPath": "/static/icons/profile.png",
+        "selectedIconPath": "/static/icons/profile-active.png"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  }
+}
