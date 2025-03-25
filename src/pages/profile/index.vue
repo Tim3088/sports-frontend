@@ -5,14 +5,19 @@
       <text class="header-title">我的</text>
     </view>
 
-    <!-- 登录提示 -->
-    <view class="login-section">
+    <!-- 登录状态 -->
+    <view v-if="isLoggedIn" class="login-section">
+      <text class="login-text">{{ userName }}已登录</text>
+    </view>
+
+    <!-- 未登录提示 -->
+    <view v-else class="login-section">
       <text class="login-text">您还没有登录</text>
       <view class="login-subtext-wrapper">
         <text class="login-subtext">点击立即登录，获取更多服务！</text>
       </view>
       <view class="login-button-wrapper">
-        <button class="login-button">立即登录</button>
+        <button class="login-button" @click="navigateToLogin">立即登录</button>
       </view>
     </view>
 
@@ -37,17 +42,48 @@
 export default {
   data() {
     return {
+      isLoggedIn: false,
+      userName: "",
       featureList: [
         { text: "关于我们", path: "/pages/about/index" },
         { text: "版本号", version: "1.0.0" },
       ],
     };
   },
+  onShow() {
+    console.log("页面显示");
+    this.checkLoginStatus(); // 执行页面显示时的逻辑
+  },
   methods: {
+    navigateToLogin() {
+      uni.navigateTo({ url: "/pages/login/index" });
+    },
     navigateToFeature(path) {
       if (path) {
         uni.navigateTo({ url: path });
       }
+    },
+    checkLoginStatus() {
+      const token = uni.getStorageSync("user_token");
+      console.log("token:", token);
+      if (token) {
+        this.isLoggedIn = true;
+        this.fetchUserName();
+      } else {
+        this.isLoggedIn = false;
+      }
+    },
+    fetchUserName() {
+      uni.getUserProfile({
+        success: (res) => {
+          console.log("获取用户信息成功:", res);
+          this.userName = res.userInfo.nickName || "用户";
+        },
+        fail: (err) => {
+          console.error("获取用户信息失败:", err);
+          this.userName = "用户";
+        },
+      });
     },
   },
 };
@@ -61,12 +97,8 @@ export default {
   height: 100%;
 }
 .header {
-  background: linear-gradient(
-    90deg,
-    #00bcd4,
-    #0288d1
-  ); /* 修改为与其他页面一致 */
-  padding: 20rpx; /* 修改为与其他页面一致 */
+  background: linear-gradient(90deg, #00bcd4, #0288d1);
+  padding: 20rpx;
   text-align: center;
 }
 .header-title {

@@ -77,6 +77,12 @@
       "style": {
         "navigationBarTitleText": "加载中..."
       }
+    },
+    {
+      "path": "pages/login/index",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
     }
   ],
   "tabBar": {

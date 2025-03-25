@@ -30,7 +30,7 @@ export default {
         {
           icon: "/static/icons/education.png",
           text: "木球教育培训",
-          path: "https://mp.weixin.qq.com/s/iWkAFLancveZg2BoIABLlg", 
+          path: "/pages/education/index", 
         },
         {
           icon: "/static/icons/equipment.png",
