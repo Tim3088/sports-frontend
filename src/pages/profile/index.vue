@@ -45,7 +45,7 @@ export default {
       isLoggedIn: false,
       userName: "",
       featureList: [
-        { text: "关于我们", path: "/pages/about/index" },
+        { text: "关于我们", path: "/pages/about/index" }, // 更新路径
         { text: "版本号", version: "1.0.0" },
       ],
     };
@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     navigateToLogin() {
-      uni.navigateTo({ url: "/pages/login/index" });
+      uni.navigateTo({ url: "/pages/user/login/index" }); // 更新路径
     },
     navigateToFeature(path) {
       if (path) {

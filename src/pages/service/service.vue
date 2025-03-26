@@ -30,22 +30,32 @@ export default {
         {
           icon: "/static/icons/education.png",
           text: "木球教育培训",
-          path: "/pages/education/index", 
+          path: "/pages/user/education/index",
         },
         {
           icon: "/static/icons/equipment.png",
           text: "木球器材器械",
-          path: "/pages/equipment/index",
+          path: "/pages/user/equipment/index", // 更新路径
         },
         {
           icon: "/static/icons/health.png",
           text: "木球健康旅居",
-          path: "/pages/health/index",
+          path: "/pages/user/health/index",
         },
         {
           icon: "/static/icons/events.png",
           text: "木球赛事",
-          path: "/pages/events/index",
+          path: "/pages/user/events/index",
+        },
+        {
+          icon: "/static/icons/community.png",
+          text: "球友互动",
+          path: "/pages/user/community/index",
+        },
+        {
+          icon: "/static/icons/news.png",
+          text: "木球新闻",
+          path: "/pages/user/news/index",
         },
       ],
     };
@@ -83,9 +93,9 @@ export default {
   font-size: 36rpx;
 }
 .features {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
   margin: 20rpx;
   padding: 20rpx 0;
   background-color: #fff;
@@ -93,9 +103,7 @@ export default {
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
 }
 .feature {
-  width: 22%;
   text-align: center;
-  margin-bottom: 30rpx;
   transition: transform 0.2s;
 }
 .feature:active {

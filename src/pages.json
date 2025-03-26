@@ -1,88 +1,53 @@
 {
   "pages": [
     {
-      "path": "pages/index/index",
-      "style": {
-        "navigationBarTitleText": "木球体育文化"
-      }
+      "path": "pages/index/index"
     },
     {
-      "path": "pages/service/service",
-      "style": {
-        "navigationBarTitleText": "服务"
-      }
+      "path": "pages/service/service"
     },
     {
-      "path": "pages/consult/index",
-      "style": {
-        "navigationBarTitleText": "咨询服务"
-      }
+      "path": "pages/profile/index"
     },
     {
-      "path": "pages/appointment/index",
-      "style": {
-        "navigationBarTitleText": "预约服务"
-      }
-    },
-    {
-      "path": "pages/feedback/index",
-      "style": {
-        "navigationBarTitleText": "反馈建议"
-      }
-    },
-    {
-      "path": "pages/help/index",
-      "style": {
-        "navigationBarTitleText": "帮助中心"
-      }
-    },
-    {
-      "path": "pages/profile/index",
-      "style": {
-        "navigationBarTitleText": "我"
-      }
-    },
-    {
-      "path": "pages/education/index",
-      "style": {
-        "navigationBarTitleText": "木球教育培训"
-      }
-    },
-    {
-      "path": "pages/equipment/index",
-      "style": {
-        "navigationBarTitleText": "木球器材器械"
-      }
-    },
-    {
-      "path": "pages/health/index",
-      "style": {
-        "navigationBarTitleText": "木球健康旅居"
-      }
-    },
-    {
-      "path": "pages/events/index",
-      "style": {
-        "navigationBarTitleText": "木球赛事"
-      }
-    },
-    {
-      "path": "pages/about/index",
-      "style": {
-        "navigationBarTitleText": "关于我们"
-      }
+      "path": "pages/about/index"
     },
     {
       "path": "pages/webview/index",
       "style": {
         "navigationBarTitleText": "加载中..."
       }
-    },
+    }
+  ],
+  "subPackages": [
     {
-      "path": "pages/login/index",
-      "style": {
-        "navigationBarTitleText": "登录"
-      }
+      "root": "pages/user",
+      "pages": [
+        {
+          "path": "community/index"
+        },
+        {
+          "path": "education/index"
+        },
+        {
+          "path": "equipment/index"
+        },
+        {
+          "path": "events/index"
+        },
+        {
+          "path": "health/index"
+        },
+        {
+          "path": "login/index",
+          "style": {
+            "navigationBarTitleText": "登录"
+          }
+        },
+        {
+          "path": "news/index"
+        }
+      ]
     }
   ],
   "tabBar": {
@@ -113,7 +78,7 @@
   },
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
+    "navigationBarTitleText": "",
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   }
