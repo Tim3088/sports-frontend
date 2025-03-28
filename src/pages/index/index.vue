@@ -84,14 +84,22 @@ export default {
         {
           icon: "/static/icons/news.png",
           text: "木球新闻",
-          path: "/pages/user/news/index",
+          path: "https://mp.weixin.qq.com/mp/homepage?__biz=MzAxODA4OTM2OQ==&hid=9",
         },
       ],
     };
   },
   methods: {
     navigateToFeature(path) {
-      uni.navigateTo({ url: path });
+      if (path.startsWith("http")) {
+        // 外部链接跳转
+        uni.navigateTo({
+          url: `/pages/webview/index?url=${encodeURIComponent(path)}`,
+        });
+      } else {
+        // 内部页面跳转
+        uni.navigateTo({ url: path });
+      }
     },
   },
 };

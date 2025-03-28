@@ -55,7 +55,7 @@ export default {
         {
           icon: "/static/icons/news.png",
           text: "木球新闻",
-          path: "/pages/user/news/index",
+          path: "https://mp.weixin.qq.com/mp/homepage?__biz=MzAxODA4OTM2OQ==&hid=9",
         },
       ],
     };

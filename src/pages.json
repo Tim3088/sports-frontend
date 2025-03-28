@@ -43,9 +43,6 @@
           "style": {
             "navigationBarTitleText": "登录"
           }
-        },
-        {
-          "path": "news/index"
         }
       ]
     }
