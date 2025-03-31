@@ -13,10 +13,10 @@
       "path": "pages/about/index"
     },
     {
-      "path": "pages/webview/index",
-      "style": {
-        "navigationBarTitleText": "加载中..."
-      }
+      "path": "pages/webview/index"
+    },
+    {
+      "path": "pages/announcements/index"
     }
   ],
   "subPackages": [

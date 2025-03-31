@@ -36,11 +36,12 @@
     </view>
 
     <!-- 通知公告 -->
-    <view class="announcement">
+    <view class="announcement" @click="navigateToAnnouncements">
+      <text class="announcement-tip">点击可查看详情</text>
       <text class="announcement-title">通知公告</text>
       <view class="announcement-content">
-        <text>倡导全民木球</text>
-        <text class="announcement-date">2025年3月25日</text>
+        <text>{{ latestAnnouncement.title }}</text>
+        <text class="announcement-date">{{ latestAnnouncement.date }}</text>
       </view>
     </view>
   </view>
@@ -87,6 +88,10 @@ export default {
           path: "https://mp.weixin.qq.com/mp/homepage?__biz=MzAxODA4OTM2OQ==&hid=9",
         },
       ],
+      latestAnnouncement: {
+        title: "木球培训活动",
+        date: "2025年3月30日",
+      },
     };
   },
   methods: {
@@ -100,6 +105,9 @@ export default {
         // 内部页面跳转
         uni.navigateTo({ url: path });
       }
+    },
+    navigateToAnnouncements() {
+      uni.navigateTo({ url: "/pages/announcements/index" });
     },
   },
 };
@@ -183,6 +191,7 @@ export default {
   padding: 20rpx;
   border-radius: 10rpx;
   box-shadow: 0 2rpx 5rpx rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 .announcement-title {
   color: #0288d1;
@@ -195,6 +204,13 @@ export default {
   font-size: 28rpx;
 }
 .announcement-date {
+  color: #999;
+}
+.announcement-tip {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  font-size: 24rpx;
   color: #999;
 }
 </style>
