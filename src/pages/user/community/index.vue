@@ -8,6 +8,16 @@
         <text class="post-title">{{ post.title }}</text>
         <text class="post-author">作者: {{ post.author }}</text>
         <text class="post-content">{{ post.content }}</text>
+        <view class="post-actions">
+          <button @click="likePost(index)">点赞 ({{ post.likes }})</button>
+          <button @click="commentPost(index)">评论</button>
+          <button @click="sendMessage(post.author)">私信</button>
+        </view>
+        <view class="comments" v-if="post.comments.length">
+          <text v-for="(comment, cIndex) in post.comments" :key="cIndex">
+            {{ comment }}
+          </text>
+        </view>
       </view>
     </view>
   </view>
@@ -22,19 +32,39 @@ export default {
           title: "木球技巧分享",
           author: "球友A",
           content: "如何提升击球精准度？",
+          likes: 0,
+          comments: [],
         },
         {
           title: "木球赛事讨论",
           author: "球友B",
           content: "近期赛事的精彩回顾。",
+          likes: 0,
+          comments: [],
         },
         {
           title: "木球装备推荐",
           author: "球友C",
           content: "哪款球杆性价比最高？",
+          likes: 0,
+          comments: [],
         },
       ],
     };
+  },
+  methods: {
+    likePost(index) {
+      this.posts[index].likes++;
+    },
+    commentPost(index) {
+      const comment = prompt("请输入评论内容：");
+      if (comment) {
+        this.posts[index].comments.push(comment);
+      }
+    },
+    sendMessage(author) {
+      alert(`向 ${author} 发送私信功能待实现`);
+    },
   },
 };
 </script>
@@ -79,5 +109,15 @@ export default {
 .post-content {
   font-size: 24rpx;
   color: #333;
+}
+.post-actions {
+  display: flex;
+  gap: 10rpx;
+  margin-top: 10rpx;
+}
+.comments {
+  margin-top: 10rpx;
+  padding-left: 20rpx;
+  border-left: 2rpx solid #ddd;
 }
 </style>

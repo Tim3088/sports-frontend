@@ -43,6 +43,27 @@
           "style": {
             "navigationBarTitleText": "登录"
           }
+        },
+        { "path": "registrations/index" },
+        { "path": "orders/index" },
+        { "path": "favorites/index" },
+        { "path": "interactions/index" },
+        { "path": "activities/index" },
+        { "path": "dynamics/index" },
+        {
+          "path": "equipment/club"
+        },
+        {
+          "path": "equipment/ball"
+        },
+        {
+          "path": "equipment/accessories"
+        },
+        {
+          "path": "equipment/gear"
+        },
+        {
+          "path": "equipment/product"
         }
       ]
     }

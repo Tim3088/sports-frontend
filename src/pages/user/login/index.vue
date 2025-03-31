@@ -16,6 +16,14 @@
 
 <script>
 export default {
+  onLoad(options) {
+    this.redirect = options.redirect || "/pages/profile/index"; // 登录成功后跳转的页面
+  },
+  data() {
+    return {
+      redirect: "",
+    };
+  },
   methods: {
     async handleLogin() {
       try {
@@ -45,6 +53,9 @@ export default {
               console.error("存储 token 失败:", storageError);
             }
             uni.showToast({ title: "登录成功", icon: "success" });
+            setTimeout(() => {
+              uni.redirectTo({ url: this.redirect }); // 登录成功后跳转到指定页面
+            }, 1000);
           } else {
             console.error("响应中未找到 token:", response.data);
             uni.showToast({ title: "登录失败", icon: "none" });

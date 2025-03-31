@@ -25,6 +25,18 @@
     <view class="features">
       <view
         class="feature-item"
+        v-for="(item, index) in additionalFeatures"
+        :key="index"
+        @click="navigateToFeature(item.path)"
+      >
+        <text class="feature-text">{{ item.text }}</text>
+      </view>
+    </view>
+
+    <!-- 关于我们和版本号 -->
+    <view class="features">
+      <view
+        class="feature-item"
         v-for="(item, index) in featureList"
         :key="index"
         @click="navigateToFeature(item.path)"
@@ -45,12 +57,22 @@ export default {
       isLoggedIn: false,
       userName: "",
       featureList: [
-        { text: "关于我们", path: "/pages/about/index" }, // 更新路径
+        { text: "关于我们", path: "/pages/about/index" },
         { text: "版本号", version: "1.0.0" },
+      ],
+      additionalFeatures: [
+        { text: "我的报名", path: "/pages/user/registrations/index" },
+        { text: "我的订单", path: "/pages/user/orders/index" },
+        { text: "我的收藏", path: "/pages/user/favorites/index" },
+        { text: "我的互动记录", path: "/pages/user/interactions/index" },
       ],
     };
   },
   onShow() {
+    const token = uni.getStorageSync("user_token");
+    if (!token) {
+      uni.showToast({ title: "还未登录", icon: "none" });
+    }
     console.log("页面显示");
     this.checkLoginStatus(); // 执行页面显示时的逻辑
   },
