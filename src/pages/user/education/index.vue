@@ -26,13 +26,10 @@
           <text class="course-info">内容: {{ course.content }}\n</text>
           <text class="course-info">收费: {{ course.fee }}</text>
         </view>
+        <button class="signup-button" @click="submitSignup(course.id)">
+          立即报名
+        </button>
       </view>
-    </view>
-
-    <!-- 在线报名入口 -->
-    <view class="section">
-      <text class="section-title">在线报名</text>
-      <button class="signup-button" @click="navigateToSignup">立即报名</button>
     </view>
 
     <!-- 师资团队介绍 -->
@@ -65,48 +62,8 @@ export default {
   data() {
     return {
       categories: ["初级培训", "中级培训", "高级培训", "教练员培训"],
-      courses: [
-        {
-          title: "初级培训班",
-          time: "2025-04-01 至 2025-04-15",
-          location: "浙工大屏峰校区木球馆",
-          content: "基础规则与技巧",
-          fee: "￥500",
-        },
-        {
-          title: "中级培训班",
-          time: "2025-05-01 至 2025-05-15",
-          location: "浙工大屏峰校区木球馆",
-          content: "进阶战术与实战",
-          fee: "￥800",
-        },
-        {
-          title: "高级培训班",
-          time: "2025-06-01 至 2025-06-15",
-          location: "浙工大屏峰校区木球馆",
-          content: "高级战术与团队协作",
-          fee: "￥1200",
-        },
-        {
-          title: "教练员培训班",
-          time: "2025-07-01 至 2025-07-15",
-          location: "浙工大屏峰校区木球馆",
-          content: "教学方法与赛事组织",
-          fee: "￥1500",
-        },
-      ],
-      team: [
-        {
-          name: "张教练",
-          title: "高级教练",
-          photo: "/static/images/coach.jpg",
-        },
-        {
-          name: "李教练",
-          title: "国家级教练",
-          photo: "/static/images/coach.jpg",
-        },
-      ],
+      courses: [], // 初始化为空数组
+      team: [], // 初始化为空数组
       gallery: [
         "/static/images/student1.jpg",
         "/static/images/student2.jpg",
@@ -115,9 +72,82 @@ export default {
     };
   },
   methods: {
-    navigateToSignup() {
-      uni.navigateTo({ url: "/pages/signup/index" });
+    async fetchCourses() {
+      try {
+        const response = await uni.request({
+          url: `https://sports.ziven.site/api/education/courses`, // 确保使用 HTTP 或 HTTPS
+          method: "GET",
+        });
+
+        if (response.statusCode === 200 && response.data.code === 200) {
+          this.courses = response.data.data.courses; // 适配后端返回的嵌套结构
+          console.log("课程数据获取成功:", this.courses);
+        } else {
+          console.error("获取课程失败:", response);
+          uni.showToast({ title: "获取课程失败", icon: "none" });
+        }
+      } catch (error) {
+        console.error("获取课程请求出错:", error);
+        uni.showToast({ title: "网络错误", icon: "none" });
+      }
     },
+    async fetchTeam() {
+      try {
+        const response = await uni.request({
+          url: `https://sports.ziven.site/api/education/team`, // 获取师资团队数据的接口地址
+          method: "GET",
+        });
+
+        if (response.statusCode === 200 && response.data.code === 200) {
+          this.team = response.data.data.team.map((member) => ({
+            id: member.id,
+            name: member.name,
+            title: member.title,
+            photo: member.img, // 将 img 字段映射为 photo
+          }));
+          console.log("师资团队数据获取成功:", this.team);
+        } else {
+          console.error("获取师资团队失败:", response);
+          uni.showToast({ title: "获取师资团队失败", icon: "none" });
+        }
+      } catch (error) {
+        console.error("获取师资团队请求出错:", error);
+        uni.showToast({ title: "网络错误", icon: "none" });
+      }
+    },
+    async submitSignup(courseId) {
+      try {
+        const token = uni.getStorageSync("user_token"); // 从本地存储获取 Bearer Token
+        if (!token) {
+          uni.showToast({ title: "请先登录", icon: "none" });
+          return;
+        }
+        const response = await uni.request({
+          url: "https://sports.ziven.site/api/education/signup", // 报名接口地址
+          method: "POST",
+          header: {
+            Authorization: `Bearer ${token}`, // 使用 Bearer Token
+            "Content-Type": "application/json",
+          },
+          data: {
+            courseId: courseId, // 传递当前课程的 ID
+          },
+        });
+        if (response.statusCode === 200) {
+          uni.showToast({ title: "报名成功", icon: "success" });
+        } else {
+          console.error("报名失败:", response);
+          uni.showToast({ title: "报名失败", icon: "none" });
+        }
+      } catch (error) {
+        console.error("报名请求出错:", error);
+        uni.showToast({ title: "报名失败", icon: "none" });
+      }
+    },
+  },
+  mounted() {
+    this.fetchCourses(); // 页面加载时获取课程数据
+    this.fetchTeam(); // 页面加载时获取师资团队数据
   },
 };
 </script>
