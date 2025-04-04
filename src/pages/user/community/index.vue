@@ -20,6 +20,24 @@
         </view>
       </view>
     </view>
+    <view class="activities">
+      <view
+        class="activity"
+        v-for="(activity, index) in activities"
+        :key="index"
+      >
+        <text class="activity-title">{{ activity.title }}</text>
+        <text class="activity-date">时间: {{ activity.date }}</text>
+        <text class="activity-location">地点: {{ activity.location }}</text>
+        <button @click="joinActivity(index)">报名</button>
+      </view>
+    </view>
+    <view class="dynamic-updates">
+      <text class="dynamic-title">球友动态</text>
+      <view v-for="(update, index) in dynamicUpdates" :key="index">
+        <text>{{ update }}</text>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -50,6 +68,11 @@ export default {
           comments: [],
         },
       ],
+      activities: [
+        { title: "周末友谊赛", date: "2023-10-15", location: "城市公园" },
+        { title: "木球技巧培训", date: "2023-10-20", location: "体育馆" },
+      ],
+      dynamicUpdates: [], // 实时动态数据
     };
   },
   methods: {
@@ -65,6 +88,20 @@ export default {
     sendMessage(author) {
       alert(`向 ${author} 发送私信功能待实现`);
     },
+    joinActivity(index) {
+      const activity = this.activities[index];
+      alert(`已报名参加活动: ${activity.title}`);
+    },
+    fetchDynamicUpdates() {
+      // 模拟动态更新数据
+      this.dynamicUpdates = [
+        "球友A 刚刚点赞了 木球技巧分享",
+        "球友B 评论了 木球赛事讨论",
+      ];
+    },
+  },
+  mounted() {
+    this.fetchDynamicUpdates(); // 页面加载时获取动态更新
   },
 };
 </script>
@@ -119,5 +156,38 @@ export default {
   margin-top: 10rpx;
   padding-left: 20rpx;
   border-left: 2rpx solid #ddd;
+}
+.activities {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background-color: #fff;
+  border-radius: 10rpx;
+  box-shadow: 0 2rpx 5rpx rgba(0, 0, 0, 0.1);
+}
+.activity {
+  margin-bottom: 20rpx;
+}
+.activity-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+.activity-date,
+.activity-location {
+  font-size: 24rpx;
+  color: #666;
+}
+.dynamic-updates {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background-color: #fff;
+  border-radius: 10rpx;
+  box-shadow: 0 2rpx 5rpx rgba(0, 0, 0, 0.1);
+}
+.dynamic-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
 }
 </style>

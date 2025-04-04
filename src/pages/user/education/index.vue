@@ -135,6 +135,11 @@ export default {
         });
         if (response.statusCode === 200) {
           uni.showToast({ title: "报名成功", icon: "success" });
+        } else if (response.data.code === 4000) {
+          uni.showToast({
+            title: "您已报名此课程，请勿重复报名",
+            icon: "none",
+          });
         } else {
           console.error("报名失败:", response);
           uni.showToast({ title: "报名失败", icon: "none" });

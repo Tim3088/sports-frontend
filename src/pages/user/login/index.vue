@@ -49,6 +49,97 @@ export default {
             try {
               uni.setStorageSync("user_token", token); // 保存 token 到本地存储
               console.log("token 已成功存储到本地:", token);
+
+              // 检查用户是否已设置昵称
+              const userInfoResponse = await uni.request({
+                url: "https://sports.ziven.site/api/user/info",
+                method: "GET",
+                header: {
+                  Authorization: `Bearer ${token}`,
+                },
+              });
+
+              if (
+                userInfoResponse.statusCode === 200 &&
+                userInfoResponse.data.code === 200
+              ) {
+                const userInfo = userInfoResponse.data.data.userInfo;
+                if (!userInfo.nickName) {
+                  console.log("用户未设置昵称，提示用户输入昵称...");
+                  const setNickname = async () => {
+                    uni.showModal({
+                      title: "首次登陆请设置昵称",
+                      editable: true, // 允许用户输入
+                      showCancel: false, // 禁用取消按钮
+                      success: async (modalRes) => {
+                        if (modalRes.confirm && modalRes.content) {
+                          const nickname = modalRes.content.trim();
+                          console.log("用户输入的昵称:", nickname);
+                          if (nickname) {
+                            const setNicknameResponse = await uni.request({
+                              url: "https://sports.ziven.site/api/user/info/nickName",
+                              method: "POST",
+                              header: {
+                                Authorization: `Bearer ${token}`,
+                              },
+                              data: {
+                                nickName: nickname, // 使用用户输入的昵称
+                              },
+                            });
+
+                            if (
+                              setNicknameResponse.statusCode === 200 &&
+                              setNicknameResponse.data.code === 200
+                            ) {
+                              console.log("昵称设置成功");
+                              uni.showToast({
+                                title: "昵称设置成功",
+                                icon: "success",
+                              });
+                              uni.setStorageSync("user_nickname", nickname); // 保存昵称到本地缓存
+                            } else if (
+                              setNicknameResponse.data.code === 4000 &&
+                              setNicknameResponse.data.message === "昵称已存在"
+                            ) {
+                              console.error("昵称已存在:", setNicknameResponse);
+                              uni.showModal({
+                                title: "提示",
+                                content: "昵称已存在，请重新输入",
+                                showCancel: false, // 禁用取消按钮
+                                success: () => {
+                                  setNickname(); // 用户点击确定后重新提示输入昵称
+                                },
+                              });
+                            } else {
+                              console.error(
+                                "设置昵称失败:",
+                                setNicknameResponse
+                              );
+                              uni.showToast({
+                                title: "设置昵称失败",
+                                icon: "none",
+                              });
+                              setNickname(); // 重新提示用户输入昵称
+                            }
+                          } else {
+                            uni.showModal({
+                              title: "提示",
+                              content: "昵称不能为空，请重新输入",
+                              showCancel: false, // 禁用取消按钮
+                              success: () => {
+                                setNickname(); // 用户点击确定后重新提示输入昵称
+                              },
+                            });
+                          }
+                        }
+                      },
+                    });
+                  };
+                  setNickname(); // 调用设置昵称逻辑
+                }
+              } else {
+                console.error("获取用户信息失败:", userInfoResponse);
+              }
             } catch (storageError) {
               console.error("存储 token 失败:", storageError);
             }
