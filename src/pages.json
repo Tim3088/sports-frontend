@@ -64,6 +64,9 @@
         },
         {
           "path": "equipment/product"
+        },
+        {
+          "path": "community/createPost"
         }
       ]
     }

@@ -3,10 +3,14 @@
     <view class="header">
       <text class="title">球友互动</text>
     </view>
+    <view class="create-post-button">
+      <button @click="navigateToCreatePost">发布新帖</button>
+    </view>
     <view class="content">
       <view class="post" v-for="(post, index) in posts" :key="index">
-        <text class="post-title">{{ post.title }}</text>
+        <text class="post-title">{{ post.title }}\n</text>
         <text class="post-author">作者: {{ post.author }}\n</text>
+        <text class="post-time">发布时间: {{ post.updatedAt }}\n</text>
         <text class="post-content">{{ post.content }}</text>
         <view class="post-actions">
           <button @click="likePost(post.id)">点赞 ({{ post.likes }})</button>
@@ -20,14 +24,10 @@
           >
             <text class="comment-author">{{ comment.author }}:</text>
             <text class="comment-content">{{ comment.content }}</text>
+            <text class="comment-time">{{ comment.createdAt }}</text>
           </view>
         </view>
       </view>
-    </view>
-    <view class="new-post">
-      <input v-model="newPostTitle" placeholder="请输入标题" />
-      <textarea v-model="newPostContent" placeholder="写点什么吧..." />
-      <button @click="createPost">发布</button>
     </view>
   </view>
 </template>
@@ -37,8 +37,6 @@ export default {
   data() {
     return {
       posts: [], // 帖子列表
-      newPostTitle: "", // 新帖标题
-      newPostContent: "", // 新帖内容
     };
   },
   methods: {
@@ -49,18 +47,29 @@ export default {
           method: "GET",
         });
         if (response.statusCode === 200 && response.data.code === 200) {
+          const formatDateTime = (dateTime) => {
+            const date = new Date(dateTime);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            const hours = String((date.getHours() + 16) % 24).padStart(2, "0"); // 小时加16并取模24
+            const minutes = String(date.getMinutes()).padStart(2, "0");
+            const seconds = String(date.getSeconds()).padStart(2, "0");
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+          };
+
           this.posts = response.data.data.posts.map((post) => ({
             id: post.id,
             title: post.title,
             content: post.content,
             author: post.nickName, // 映射 nickName 为 author
             likes: post.likes,
-            updatedAt: post.updatedAt,
+            updatedAt: formatDateTime(post.updatedAt), // 格式化帖子更新时间
             comments: post.comments.map((comment) => ({
               author: comment.nickName, // 映射 nickName 为评论作者
               content: comment.content,
-              createdAt: comment.createdAt,
-            })), // 映射评论数据
+              createdAt: formatDateTime(comment.createdAt), // 格式化评论时间
+            })),
           }));
         } else {
           console.error("获取帖子失败:", response);
@@ -143,45 +152,10 @@ export default {
         },
       });
     },
-    async createPost() {
-      const userName = uni.getStorageSync("user_nickname");
-      const token = uni.getStorageSync("user_token"); // 从本地存储获取 Token
-      if (!token) {
-        uni.showToast({ title: "请先登录", icon: "none" });
-        return;
-      }
-      if (!userName) {
-        uni.showToast({ title: "请先设置用户名", icon: "none" });
-        return;
-      }
-      if (!this.newPostTitle.trim()) {
-        uni.showToast({ title: "标题不能为空", icon: "none" });
-        return;
-      }
-      if (!this.newPostContent.trim()) {
-        uni.showToast({ title: "内容不能为空", icon: "none" });
-        return;
-      }
-      try {
-        const response = await uni.request({
-          url: "https://sports.ziven.site/api/community/posts",
-          method: "POST",
-          header: {
-            Authorization: `Bearer ${token}`, // 添加 Authorization 头部
-            "Content-Type": "application/json", // 设置 Content-Type
-          },
-          data: { title: this.newPostTitle, content: this.newPostContent, author: userName },
-        });
-        if (response.statusCode === 200 && response.data.code === 200) {
-          this.newPostTitle = ""; // 清空标题输入框
-          this.newPostContent = ""; // 清空内容输入框
-          this.fetchPosts(); // 重新获取帖子列表
-        } else {
-          console.error("发帖失败:", response);
-        }
-      } catch (error) {
-        console.error("发帖请求出错:", error);
-      }
+    navigateToCreatePost() {
+      uni.navigateTo({
+        url: "/pages/user/community/createPost", // 跳转到新界面
+      });
     },
   },
   mounted() {
@@ -206,6 +180,18 @@ export default {
   font-size: 36rpx;
   font-weight: bold;
 }
+.create-post-button {
+  margin: 20rpx 0;
+  text-align: center;
+}
+button {
+  background-color: #4caf50;
+  color: white;
+  font-size: 28rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 5rpx;
+  border: none;
+}
 .content {
   margin-top: 20rpx;
 }
@@ -224,6 +210,11 @@ export default {
 .post-author {
   font-size: 24rpx;
   color: #666;
+  margin-bottom: 10rpx;
+}
+.post-time {
+  font-size: 24rpx;
+  color: #999;
   margin-bottom: 10rpx;
 }
 .post-content {
@@ -255,14 +246,6 @@ textarea {
   border: 1rpx solid #ddd;
   border-radius: 5rpx;
 }
-button {
-  background-color: #4caf50;
-  color: white;
-  font-size: 28rpx;
-  padding: 10rpx 20rpx;
-  border-radius: 5rpx;
-  border: none;
-}
 .comment {
   margin-top: 5rpx;
   padding-left: 20rpx;
@@ -277,6 +260,11 @@ button {
 .comment-content {
   font-size: 24rpx;
   color: #666;
+}
+.comment-time {
+  font-size: 20rpx;
+  color: #999;
+  margin-left: 10rpx;
 }
 .new-post input {
   width: 100%;
