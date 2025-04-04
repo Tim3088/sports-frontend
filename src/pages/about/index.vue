@@ -24,13 +24,9 @@ export default {
 .header {
   text-align: center;
   margin-bottom: 20rpx;
-  background: linear-gradient(
-    90deg,
-    #00bcd4,
-    #0288d1
-  ); /* 修改为与其他页面一致 */
-  padding: 20rpx; /* 修改为与其他页面一致 */
-  color: white; /* 设置文字颜色为白色 */
+  background: linear-gradient(90deg, #4caf50, #388e3c); /* 修改为绿色渐变 */
+  padding: 20rpx;
+  color: white;
 }
 .title {
   font-size: 36rpx;

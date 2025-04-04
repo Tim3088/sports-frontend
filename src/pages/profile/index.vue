@@ -119,7 +119,7 @@ export default {
   height: 100%;
 }
 .header {
-  background: linear-gradient(90deg, #00bcd4, #0288d1);
+  background: linear-gradient(90deg, #4caf50, #388e3c); /* 修改为绿色渐变 */
   padding: 20rpx;
   text-align: center;
 }
@@ -153,7 +153,7 @@ export default {
   text-align: center;
 }
 .login-button {
-  background-color: #00bcd4;
+  background-color: #4caf50; /* 修改为绿色 */
   color: white;
   font-size: 28rpx;
   padding: 10rpx 20rpx;

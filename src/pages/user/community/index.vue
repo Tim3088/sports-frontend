@@ -75,7 +75,7 @@ export default {
   padding: 20rpx;
 }
 .header {
-  background: linear-gradient(90deg, #00bcd4, #0288d1);
+  background: linear-gradient(90deg, #4caf50, #388e3c); /* 修改为绿色渐变 */
   color: white;
   padding: 20rpx;
   text-align: center;

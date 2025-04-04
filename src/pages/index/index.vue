@@ -121,7 +121,7 @@ export default {
   height: 100%;
 }
 .header {
-  background: linear-gradient(90deg, #00bcd4, #0288d1);
+  background: linear-gradient(90deg, #4caf50, #388e3c); /* 修改为绿色渐变 */
   color: white;
   padding: 20rpx;
   text-align: center;
@@ -194,7 +194,7 @@ export default {
   position: relative;
 }
 .announcement-title {
-  color: #0288d1;
+  color: #4caf50; /* 修改为绿色 */
   font-weight: bold;
   margin-bottom: 10rpx;
 }

@@ -84,7 +84,7 @@ export default {
   height: 100%;
 }
 .header {
-  background: linear-gradient(90deg, #00bcd4, #0288d1);
+  background: linear-gradient(90deg, #4caf50, #388e3c); /* 修改为绿色渐变 */
   color: white;
   padding: 20rpx;
   text-align: center;
@@ -110,13 +110,13 @@ export default {
   transform: scale(0.95);
 }
 .feature-icon-wrapper {
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9); /* 修改为绿色背景 */
   width: 120rpx;
   height: 120rpx;
   margin: 0 auto 15rpx;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
   border-radius: 50%;
   box-shadow: 0 4rpx 10rpx rgba(0, 188, 212, 0.2);
   position: relative;

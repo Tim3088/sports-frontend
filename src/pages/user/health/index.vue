@@ -122,7 +122,7 @@ export default {
 .header {
   text-align: center;
   margin-bottom: 20rpx;
-  background: linear-gradient(90deg, #00bcd4, #0288d1);
+  background: linear-gradient(90deg, #4caf50, #388e3c); /* 修改为绿色渐变 */
   padding: 20rpx;
   color: white;
 }
@@ -171,7 +171,7 @@ export default {
 .book-button {
   width: 100%;
   height: 80rpx;
-  background-color: #0288d1;
+  background-color: #4caf50; /* 修改为绿色 */
   color: white;
   font-size: 28rpx;
   text-align: center;

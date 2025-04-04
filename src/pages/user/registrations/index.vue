@@ -7,11 +7,17 @@
       <view
         class="registration"
         v-for="(registration, index) in registrations"
-        :key="index"
+        :key="registration.courseId"
       >
         <text class="course-title">{{ registration.title }}\n</text>
         <text class="course-info">时间: {{ registration.time }}\n</text>
         <text class="course-info">地点: {{ registration.location }}</text>
+        <button
+          class="cancel-button"
+          @click="cancelRegistration(registration.courseId, index)"
+        >
+          取消报名
+        </button>
       </view>
     </view>
     <view v-else class="empty">
@@ -56,6 +62,27 @@ export default {
         }
       } catch (error) {
         console.error("获取报名信息请求出错:", error);
+      }
+    },
+    async cancelRegistration(courseId, index) {
+      try {
+        const token = uni.getStorageSync("user_token");
+        const response = await uni.request({
+          url: `https://sports.ziven.site/api/user/courses/${courseId}`, // 更新后的后端接口地址
+          method: "DELETE",
+          header: {
+            Authorization: `Bearer ${token}`, // 使用 Bearer Token
+          },
+        });
+        if (response.statusCode === 200 && response.data.code === 200) {
+          uni.showToast({ title: "取消报名成功", icon: "success" });
+          this.registrations.splice(index, 1); // 从列表中移除已取消的报名记录
+        } else {
+          console.error("取消报名失败:", response);
+          uni.showToast({ title: "取消报名失败", icon: "none" });
+        }
+      } catch (error) {
+        console.error("取消报名请求出错:", error);
         uni.showToast({ title: "网络错误", icon: "none" });
       }
     },
@@ -71,7 +98,7 @@ export default {
 .header {
   text-align: center;
   margin-bottom: 20rpx;
-  background: linear-gradient(90deg, #00bcd4, #0288d1);
+  background: linear-gradient(90deg, #4caf50, #388e3c); /* 修改为绿色渐变 */
   padding: 20rpx;
   color: white;
 }
@@ -89,6 +116,7 @@ export default {
   padding: 20rpx;
   border-radius: 10rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 .course-title {
   font-size: 28rpx;
@@ -107,5 +135,17 @@ export default {
   height: 100%;
   color: #999;
   font-size: 28rpx;
+}
+.cancel-button {
+  position: absolute;
+  right: 20rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #f44336;
+  color: white;
+  font-size: 24rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 5rpx;
+  border: none;
 }
 </style>
