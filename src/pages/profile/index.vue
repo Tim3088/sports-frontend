@@ -99,6 +99,11 @@ export default {
       }
     },
     fetchUserName() {
+      const storedNickname = uni.getStorageSync("user_nickname");
+      if (storedNickname) {
+        this.userName = storedNickname; // 从本地缓存获取昵称
+        return;
+      }
       const token = uni.getStorageSync("user_token");
       uni.request({
         url: "https://sports.ziven.site/api/user/info",

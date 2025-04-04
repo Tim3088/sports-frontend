@@ -13,8 +13,21 @@
         <text class="post-time">发布时间: {{ post.updatedAt }}\n</text>
         <text class="post-content">{{ post.content }}</text>
         <view class="post-actions">
-          <button @click="likePost(post.id)">点赞 ({{ post.likes }})</button>
-          <button @click="commentPost(post.id)">评论</button>
+          <view class="action-item" @click="toggleLikePost(post.id)">
+            <image
+              :src="
+                userLikes[post.id]
+                  ? '/static/icons/like-active.png'
+                  : '/static/icons/like.png'
+              "
+              class="action-icon"
+            />
+            <text>{{ post.likes }}</text>
+          </view>
+          <view class="action-item" @click="commentPost(post.id)">
+            <image src="/static/icons/comment.png" class="action-icon" />
+            <text>评论</text>
+          </view>
         </view>
         <view class="comments" v-if="post.comments.length">
           <view
@@ -37,14 +50,23 @@ export default {
   data() {
     return {
       posts: [], // 帖子列表
+      userLikes: {}, // 记录用户对每个帖子的点赞状态
     };
   },
   methods: {
     async fetchPosts() {
       try {
+        const token = uni.getStorageSync("user_token");
+        if (!token) {
+          uni.showToast({ title: "请先登录", icon: "none" });
+          return;
+        }
         const response = await uni.request({
           url: "https://sports.ziven.site/api/community/posts",
           method: "GET",
+          header: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         if (response.statusCode === 200 && response.data.code === 200) {
           const formatDateTime = (dateTime) => {
@@ -65,12 +87,17 @@ export default {
             author: post.nickName, // 映射 nickName 为 author
             likes: post.likes,
             updatedAt: formatDateTime(post.updatedAt), // 格式化帖子更新时间
+            liked: post.liked, // 后端返回用户是否已点赞
             comments: post.comments.map((comment) => ({
               author: comment.nickName, // 映射 nickName 为评论作者
               content: comment.content,
               createdAt: formatDateTime(comment.createdAt), // 格式化评论时间
             })),
           }));
+          this.userLikes = this.posts.reduce((acc, post) => {
+            acc[post.id] = post.liked;
+            return acc;
+          }, {});
         } else {
           console.error("获取帖子失败:", response);
         }
@@ -78,30 +105,29 @@ export default {
         console.error("获取帖子请求出错:", error);
       }
     },
-    async likePost(postId) {
+    async toggleLikePost(postId) {
+      const token = uni.getStorageSync("user_token");
+      if (!token) {
+        uni.showToast({ title: "请先登录", icon: "none" });
+        return;
+      }
+      const liked = this.userLikes[postId];
       try {
-        const token = uni.getStorageSync("user_token"); // 从本地存储获取 Token
-        if (!token) {
-          uni.showToast({ title: "请先登录", icon: "none" });
-          return;
-        }
         const response = await uni.request({
           url: `https://sports.ziven.site/api/community/posts/${postId}/like`,
-          method: "POST",
+          method: liked ? "DELETE" : "POST", // 根据当前状态决定请求类型
           header: {
-            Authorization: `Bearer ${token}`, // 添加 Authorization 头部
+            Authorization: `Bearer ${token}`,
           },
         });
-        if (response.statusCode === 200) {
-          if (response.data.code === 200) {
-            this.fetchPosts(); // 重新获取帖子列表
-          } else if (response.data.code === 4000) {
-            uni.showToast({ title: "帖子不存在", icon: "none" });
-          } else {
-            console.error("点赞失败:", response);
+        if (response.statusCode === 200 && response.data.code === 200) {
+          this.userLikes[postId] = !liked; // 更新本地状态
+          const post = this.posts.find((p) => p.id === postId);
+          if (post) {
+            post.likes += liked ? -1 : 1; // 更新点赞数
           }
         } else {
-          console.error("点赞失败:", response);
+          console.error("点赞操作失败:", response);
         }
       } catch (error) {
         console.error("点赞请求出错:", error);
@@ -223,8 +249,17 @@ button {
 }
 .post-actions {
   display: flex;
-  gap: 10rpx;
+  gap: 20rpx;
   margin-top: 10rpx;
+}
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+.action-icon {
+  width: 30rpx;
+  height: 30rpx;
 }
 .comments {
   margin-top: 10rpx;
