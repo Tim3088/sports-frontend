@@ -11,6 +11,9 @@
     <view class="footer">
       <text class="footer-text">© 2025 版权所有 zjut</text>
     </view>
+    <view v-if="loading" class="loading-overlay">
+      <text class="loading-text">登录中...</text>
+    </view>
   </view>
 </template>
 
@@ -22,10 +25,12 @@ export default {
   data() {
     return {
       redirect: "",
+      loading: false, // 添加 loading 状态
     };
   },
   methods: {
     async handleLogin() {
+      this.loading = true; // 开始显示加载状态
       try {
         const loginRes = await new Promise((resolve, reject) => {
           uni.login({
@@ -158,6 +163,8 @@ export default {
       } catch (error) {
         console.error("登录流程出错:", error);
         uni.showToast({ title: "登录失败", icon: "none" });
+      } finally {
+        this.loading = false; // 隐藏加载状态
       }
     },
   },
@@ -208,5 +215,21 @@ export default {
 .footer-text {
   font-size: 24rpx;
   color: #999;
+}
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.loading-text {
+  color: #fff;
+  font-size: 28rpx;
 }
 </style>

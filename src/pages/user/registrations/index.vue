@@ -3,7 +3,10 @@
     <view class="header">
       <text class="title">我的报名</text>
     </view>
-    <view v-if="registrations.length" class="registrations">
+    <view v-if="loading" class="loading">
+      <text>加载中...</text>
+    </view>
+    <view v-else-if="registrations.length" class="registrations">
       <view
         class="registration"
         v-for="(registration, index) in registrations"
@@ -32,6 +35,7 @@ export default {
   data() {
     return {
       registrations: [], // 存储报名信息
+      loading: true, // 加载状态
     };
   },
   onShow() {
@@ -45,6 +49,7 @@ export default {
   },
   methods: {
     async fetchRegistrations() {
+      this.loading = true; // 开始加载
       try {
         const token = uni.getStorageSync("user_token");
         const response = await uni.request({
@@ -62,9 +67,12 @@ export default {
         }
       } catch (error) {
         console.error("获取报名信息请求出错:", error);
+      } finally {
+        this.loading = false; // 加载完成
       }
     },
     async cancelRegistration(courseId, index) {
+      this.loading = true; // 显示加载中
       try {
         const token = uni.getStorageSync("user_token");
         const response = await uni.request({
@@ -84,6 +92,8 @@ export default {
       } catch (error) {
         console.error("取消报名请求出错:", error);
         uni.showToast({ title: "网络错误", icon: "none" });
+      } finally {
+        this.loading = false; // 加载完成
       }
     },
   },
@@ -105,6 +115,14 @@ export default {
 .title {
   font-size: 36rpx;
   font-weight: bold;
+}
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #999;
+  font-size: 28rpx;
 }
 .registrations {
   display: flex;

@@ -1,43 +1,49 @@
 <template>
   <view class="page">
-    <view class="header">
-      <text class="title">球友互动</text>
+    <!-- 添加加载中提示 -->
+    <view v-if="loading" class="loading">
+      <text>加载中...</text>
     </view>
-    <view class="create-post-button">
-      <button @click="navigateToCreatePost">发布新帖</button>
-    </view>
-    <view class="content">
-      <view class="post" v-for="(post, index) in posts" :key="index">
-        <text class="post-title">{{ post.title }}\n</text>
-        <text class="post-author">作者: {{ post.author }}\n</text>
-        <text class="post-time">发布时间: {{ post.updatedAt }}\n</text>
-        <text class="post-content">{{ post.content }}</text>
-        <view class="post-actions">
-          <view class="action-item" @click="toggleLikePost(post.id)">
-            <image
-              :src="
-                userLikes[post.id]
-                  ? '/static/icons/like-active.png'
-                  : '/static/icons/like.png'
-              "
-              class="action-icon"
-            />
-            <text>{{ post.likes }}</text>
+    <view v-else>
+      <view class="header">
+        <text class="title">球友互动</text>
+      </view>
+      <view class="create-post-button">
+        <button @click="navigateToCreatePost">发布新帖</button>
+      </view>
+      <view class="content">
+        <view class="post" v-for="(post, index) in posts" :key="index">
+          <text class="post-title">{{ post.title }}\n</text>
+          <text class="post-author">作者: {{ post.author }}\n</text>
+          <text class="post-time">发布时间: {{ post.updatedAt }}\n</text>
+          <text class="post-content">{{ post.content }}</text>
+          <view class="post-actions">
+            <view class="action-item" @click="toggleLikePost(post.id)">
+              <image
+                :src="
+                  userLikes[post.id]
+                    ? '/static/icons/like-active.png'
+                    : '/static/icons/like.png'
+                "
+                class="action-icon"
+              />
+              <text>{{ post.likes }}</text>
+            </view>
+            <view class="action-item" @click="commentPost(post.id)">
+              <image src="/static/icons/comment.png" class="action-icon" />
+              <text>评论</text>
+            </view>
           </view>
-          <view class="action-item" @click="commentPost(post.id)">
-            <image src="/static/icons/comment.png" class="action-icon" />
-            <text>评论</text>
-          </view>
-        </view>
-        <view class="comments" v-if="post.comments.length">
-          <view
-            v-for="(comment, cIndex) in post.comments"
-            :key="cIndex"
-            class="comment"
-          >
-            <text class="comment-author">{{ comment.author }}:</text>
-            <text class="comment-content">{{ comment.content }}</text>
-            <text class="comment-time">{{ comment.createdAt }}</text>
+          <view class="comments" v-if="post.comments.length">
+            <view
+              v-for="(comment, cIndex) in post.comments"
+              :key="cIndex"
+              class="comment"
+            >
+              <text class="comment-author">{{ comment.author }}:</text>
+              <text class="comment-content">{{ comment.content }}</text>
+              <text class="comment-time">{{ comment.createdAt }}</text>
+            </view>
           </view>
         </view>
       </view>
@@ -51,10 +57,12 @@ export default {
     return {
       posts: [], // 帖子列表
       userLikes: {}, // 记录用户对每个帖子的点赞状态
+      loading: false, // 添加加载状态
     };
   },
   methods: {
     async fetchPosts() {
+      this.loading = true; // 开始加载
       try {
         const token = uni.getStorageSync("user_token");
         if (!token) {
@@ -103,6 +111,8 @@ export default {
         }
       } catch (error) {
         console.error("获取帖子请求出错:", error);
+      } finally {
+        this.loading = false; // 加载完成
       }
     },
     async toggleLikePost(postId) {
@@ -337,6 +347,14 @@ textarea {
   padding: 10rpx;
   border: 1rpx solid #ddd;
   border-radius: 5rpx;
+  font-size: 28rpx;
+}
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #999;
   font-size: 28rpx;
 }
 </style>

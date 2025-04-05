@@ -23,7 +23,10 @@
         我发布的
       </button>
     </view>
-    <view v-if="posts.length" class="posts">
+    <view v-if="loading" class="loading">
+      <text>加载中...</text>
+    </view>
+    <view v-else-if="posts.length" class="posts">
       <view class="post" v-for="(post, index) in filteredPosts" :key="post.id">
         <text class="post-title">{{ post.title }}\n</text>
         <text class="post-content">{{ post.content }}\n</text>
@@ -37,7 +40,9 @@
             :key="cIndex"
           >
             <text class="comment-author">{{ comment.nickName }}:</text>
-            <text class="comment-content scrollable">{{ comment.content }}</text>
+            <text class="comment-content scrollable">{{
+              comment.content
+            }}</text>
             <text class="comment-time">{{
               formatDate(comment.createdAt)
             }}</text>
@@ -69,6 +74,7 @@ export default {
       posts: [], // 存储用户的互动记录
       filterType: "all", // 筛选类型
       currentUser: "", // 当前用户
+      loading: false, // 添加加载状态
     };
   },
   computed: {
@@ -94,6 +100,7 @@ export default {
   },
   methods: {
     async fetchInteractions() {
+      this.loading = true; // 开始加载
       try {
         const token = uni.getStorageSync("user_token");
         this.currentUser = uni.getStorageSync("user_nickname");
@@ -158,6 +165,8 @@ export default {
         }
       } catch (error) {
         console.error("获取互动记录请求出错:", error);
+      } finally {
+        this.loading = false; // 加载完成
       }
     },
     async deletePost(postId, index) {
@@ -330,5 +339,13 @@ export default {
   overflow-y: auto; /* 添加垂直滚动条 */
   word-wrap: break-word; /* 自动换行 */
   word-break: break-all; /* 强制单词换行 */
+}
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #999;
+  font-size: 28rpx;
 }
 </style>

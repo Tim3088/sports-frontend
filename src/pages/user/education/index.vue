@@ -54,6 +54,11 @@
         />
       </view>
     </view>
+
+    <!-- 加载中提示 -->
+    <view v-if="loading" class="loading-overlay">
+      <text class="loading-text">加载中...</text>
+    </view>
   </view>
 </template>
 
@@ -69,10 +74,12 @@ export default {
         "/static/images/student2.jpg",
         "/static/images/student3.jpg",
       ],
+      loading: false, // 新增loading状态
     };
   },
   methods: {
     async fetchCourses() {
+      this.loading = true; // 开始加载
       try {
         const response = await uni.request({
           url: `https://sports.ziven.site/api/education/courses`, // 确保使用 HTTP 或 HTTPS
@@ -89,9 +96,12 @@ export default {
       } catch (error) {
         console.error("获取课程请求出错:", error);
         uni.showToast({ title: "网络错误", icon: "none" });
+      } finally {
+        this.loading = false; // 加载完成
       }
     },
     async fetchTeam() {
+      this.loading = true; // 开始加载
       try {
         const response = await uni.request({
           url: `https://sports.ziven.site/api/education/team`, // 获取师资团队数据的接口地址
@@ -113,9 +123,12 @@ export default {
       } catch (error) {
         console.error("获取师资团队请求出错:", error);
         uni.showToast({ title: "网络错误", icon: "none" });
+      } finally {
+        this.loading = false; // 加载完成
       }
     },
     async submitSignup(courseId) {
+      this.loading = true; // 开始加载
       try {
         const token = uni.getStorageSync("user_token"); // 从本地存储获取 Bearer Token
         if (!token) {
@@ -147,6 +160,8 @@ export default {
       } catch (error) {
         console.error("报名请求出错:", error);
         uni.showToast({ title: "报名失败", icon: "none" });
+      } finally {
+        this.loading = false; // 加载完成
       }
     },
   },
@@ -257,5 +272,21 @@ export default {
   width: 100rpx;
   height: 100rpx;
   border-radius: 10rpx;
+}
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.loading-text {
+  color: white;
+  font-size: 32rpx;
 }
 </style>
