@@ -37,7 +37,7 @@
             :key="cIndex"
           >
             <text class="comment-author">{{ comment.nickName }}:</text>
-            <text class="comment-content">{{ comment.content }}</text>
+            <text class="comment-content scrollable">{{ comment.content }}</text>
             <text class="comment-time">{{
               formatDate(comment.createdAt)
             }}</text>
@@ -107,7 +107,6 @@ export default {
         if (response.statusCode === 200 && response.data.code === 200) {
           const formatDateTime = (dateTime) => {
             try {
-              // 替换空格为 'T'，以兼容 iOS 的日期格式
               const formattedDateTime = dateTime.replace(" ", "T");
               const date = new Date(formattedDateTime);
               if (isNaN(date.getTime())) {
@@ -116,8 +115,22 @@ export default {
               const year = date.getFullYear();
               const month = String(date.getMonth() + 1).padStart(2, "0");
               const day = String(date.getDate()).padStart(2, "0");
-              const hours = String(date.getHours()).padStart(2, "0");
-              const minutes = String(date.getMinutes()).padStart(2, "0");
+              let hours = date.getHours() + 16; // 增加16小时
+              let minutes = date.getMinutes();
+
+              // 处理小时溢出
+              if (hours >= 24) {
+                hours -= 24;
+                const nextDay = new Date(date);
+                nextDay.setDate(date.getDate() + 1);
+                year = nextDay.getFullYear();
+                month = String(nextDay.getMonth() + 1).padStart(2, "0");
+                day = String(nextDay.getDate()).padStart(2, "0");
+              }
+
+              hours = String(hours).padStart(2, "0");
+              minutes = String(minutes).padStart(2, "0");
+
               return `${year}-${month}-${day} ${hours}:${minutes}`;
             } catch (error) {
               console.error("Error formatting date:", error);
@@ -311,5 +324,11 @@ export default {
 .delete-text {
   font-size: 24rpx;
   vertical-align: middle;
+}
+.scrollable {
+  max-height: 100rpx; /* 设置最大高度 */
+  overflow-y: auto; /* 添加垂直滚动条 */
+  word-wrap: break-word; /* 自动换行 */
+  word-break: break-all; /* 强制单词换行 */
 }
 </style>
