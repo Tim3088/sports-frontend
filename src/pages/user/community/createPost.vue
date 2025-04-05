@@ -5,7 +5,11 @@
     </view>
     <view class="new-post">
       <input v-model="newPostTitle" placeholder="请输入标题" />
-      <textarea v-model="newPostContent" placeholder="写点什么吧..." />
+      <textarea
+        v-model="newPostContent"
+        placeholder="写点什么吧..."
+        maxlength="500"
+      />
       <button @click="createPost">发布</button>
     </view>
   </view>
@@ -37,6 +41,10 @@ export default {
       }
       if (!this.newPostContent.trim()) {
         uni.showToast({ title: "内容不能为空", icon: "none" });
+        return;
+      }
+      if (this.newPostContent.length > 500) {
+        uni.showToast({ title: "帖子内容不能超过500字", icon: "none" });
         return;
       }
       try {
@@ -98,7 +106,7 @@ export default {
 }
 textarea {
   width: 100%;
-  height: 100rpx;
+  height: 500rpx; /* 增加高度 */
   margin-bottom: 10rpx;
   padding: 10rpx;
   border: 1rpx solid #ddd;

@@ -146,10 +146,20 @@ export default {
       }
       uni.showModal({
         title: "发表评论",
-        placeholderText: "请输入评论内容",
+        placeholderText: "请输入评论内容 (最多500字)",
         editable: true,
         success: async (res) => {
           if (res.confirm && res.content) {
+            // 检查内容长度是否超过500字
+            if (res.content.length > 500) {
+              uni.showToast({ title: "评论内容不能超过500字", icon: "none" });
+              return;
+            }
+            const sanitizedContent = res.content.replace(/\n+/g, "\n").trim();
+            if (!sanitizedContent) {
+              uni.showToast({ title: "评论内容不能为空", icon: "none" });
+              return;
+            }
             try {
               const response = await uni.request({
                 url: `https://sports.ziven.site/api/community/posts/${postId}/comment`,
@@ -158,7 +168,7 @@ export default {
                   Authorization: `Bearer ${token}`, // 添加 Authorization 头部
                   "Content-Type": "application/json", // 设置 Content-Type
                 },
-                data: { content: res.content, author: userName },
+                data: { content: sanitizedContent, author: userName },
               });
               if (response.statusCode === 200) {
                 if (response.data.code === 200) {
@@ -186,6 +196,9 @@ export default {
   },
   mounted() {
     this.fetchPosts(); // 页面加载时获取帖子列表
+  },
+  onShow() {
+    this.fetchPosts(); // 每次页面显示时刷新帖子列表
   },
 };
 </script>
@@ -232,6 +245,10 @@ button {
   font-size: 32rpx; /* 增大字体 */
   font-weight: bold;
   color: #000; /* 更黑 */
+  max-height: 100px; /* 限制最大高度 */
+  overflow: auto; /* 超出部分显示滚动条 */
+  word-wrap: break-word; /* 长单词换行 */
+  white-space: pre-wrap; /* 保留换行符并换行 */
 }
 .post-author {
   font-size: 24rpx;
@@ -246,6 +263,10 @@ button {
 .post-content {
   font-size: 28rpx; /* 增大字体 */
   color: #000; /* 更黑 */
+  max-height: 200px; /* 限制最大高度 */
+  overflow: auto; /* 超出部分显示滚动条 */
+  word-wrap: break-word; /* 长单词换行 */
+  white-space: pre-wrap; /* 保留换行符并换行 */
 }
 .post-actions {
   display: flex;
@@ -285,7 +306,8 @@ textarea {
   margin-top: 5rpx;
   padding-left: 20rpx;
   display: flex;
-  gap: 5rpx;
+  flex-direction: column; /* 垂直排列时间和内容 */
+  gap: 5px; /* 增加间距 */
 }
 .comment-author {
   font-size: 24rpx;
@@ -295,6 +317,13 @@ textarea {
 .comment-content {
   font-size: 24rpx;
   color: #666;
+  word-wrap: break-word; /* 长单词换行 */
+  white-space: pre-wrap; /* 保留换行符并换行 */
+  overflow-wrap: break-word; /* 防止溢出 */
+  max-width: 100%; /* 限制最大宽度，防止超出容器 */
+  display: block; /* 确保内容块级显示 */
+  max-height: 200px; /* 限制最大高度 */
+  overflow: auto; /* 超出部分显示滚动条 */
 }
 .comment-time {
   font-size: 20rpx;
