@@ -55,12 +55,13 @@ export default {
         });
         if (response.statusCode === 200 && response.data.code === 200) {
           uni.showToast({ title: "发布成功", icon: "success" });
-          // 停止一秒
-          setTimeout(() => {
-            uni.redirectTo({
-              url: "/pages/user/community/index", // 跳转到帖子列表页面
-            });
-          }, 1000);
+          // 通知上一个页面刷新帖子列表
+          const pages = getCurrentPages();
+          const previousPage = pages[pages.length - 2];
+          if (previousPage && previousPage.onShow) {
+            previousPage.onShow(); // 调用上一个页面的 onShow 方法
+          }
+          uni.navigateBack();
         } else {
           console.error("发帖失败:", response);
         }
