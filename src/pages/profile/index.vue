@@ -105,6 +105,7 @@ export default {
         return;
       }
       const token = uni.getStorageSync("user_token");
+      uni.showLoading({ title: "加载中" }); // 显示加载中提示
       uni.request({
         url: "https://sports.ziven.site/api/user/info",
         method: "GET",
@@ -121,6 +122,9 @@ export default {
         },
         fail: (err) => {
           console.error("获取用户信息请求失败:", err);
+        },
+        complete: () => {
+          uni.hideLoading(); // 隐藏加载中提示
         },
       });
     },

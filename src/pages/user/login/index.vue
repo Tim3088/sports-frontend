@@ -30,6 +30,13 @@ export default {
   },
   methods: {
     async handleLogin() {
+      if (uni.getStorageSync("user_token")) {
+        uni.showToast({
+          title: "您已登录，请勿重复登录",
+          icon: "none",
+        });
+        return;
+      }
       this.loading = true; // 开始显示加载状态
       try {
         const loginRes = await new Promise((resolve, reject) => {
