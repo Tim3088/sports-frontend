@@ -114,31 +114,18 @@ export default {
         if (response.statusCode === 200 && response.data.code === 200) {
           const formatDateTime = (dateTime) => {
             try {
-              const formattedDateTime = dateTime.replace(" ", "T");
-              const date = new Date(formattedDateTime);
+              const standardizedDateTime = dateTime.replace(" ", "T");
+              const date = new Date(standardizedDateTime);
               if (isNaN(date.getTime())) {
                 throw new Error("Invalid date format");
               }
               const year = date.getFullYear();
               const month = String(date.getMonth() + 1).padStart(2, "0");
               const day = String(date.getDate()).padStart(2, "0");
-              let hours = date.getHours() + 16; // 增加16小时
-              let minutes = date.getMinutes();
-
-              // 处理小时溢出
-              if (hours >= 24) {
-                hours -= 24;
-                const nextDay = new Date(date);
-                nextDay.setDate(date.getDate() + 1);
-                year = nextDay.getFullYear();
-                month = String(nextDay.getMonth() + 1).padStart(2, "0");
-                day = String(nextDay.getDate()).padStart(2, "0");
-              }
-
-              hours = String(hours).padStart(2, "0");
-              minutes = String(minutes).padStart(2, "0");
-
-              return `${year}-${month}-${day} ${hours}:${minutes}`;
+              const hours = String(date.getHours()).padStart(2, "0");
+              const minutes = String(date.getMinutes()).padStart(2, "0");
+              const seconds = String(date.getSeconds()).padStart(2, "0");
+              return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
             } catch (error) {
               console.error("Error formatting date:", error);
               return "Invalid Date";
@@ -174,7 +161,7 @@ export default {
         const token = uni.getStorageSync("user_token");
 
         const response = await uni.request({
-          url: `http://sports.ziven.site/api/user/posts/${postId}`, // 删除帖子接口地址
+          url: `https://sports.ziven.site/api/user/posts/${postId}`, // 删除帖子接口地址
           method: "DELETE",
           header: {
             Authorization: `Bearer ${token}`, // 使用 Bearer Token
@@ -195,12 +182,7 @@ export default {
     },
     formatDate(dateString) {
       const date = new Date(dateString);
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-        2,
-        "0"
-      )}-${String(date.getDate()).padStart(2, "0")} ${String(
-        date.getHours()
-      ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+      return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
     },
     filterPosts(type) {
       this.filterType = type;
